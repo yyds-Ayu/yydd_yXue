@@ -43,6 +43,8 @@
        <!--<table tableName="yx_admin" domainObjectName="Admin" ></table>-->
         <!--<table tableName="banner" domainObjectName="Banner" ></table>&ndash;&gt;-->
         <!--<table tableName="yx_user" domainObjectName="User"></table>-->
-        <table tableName="yx_feedback" domainObjectName="Feedback"/>
+       <!-- <table tableName="yx_feedback" domainObjectName="Feedback"/>-->
+       <!-- <table tableName="yx_user" domainObjectName="User"/>-->
+        <table tableName="yx_category" domainObjectName="Category"/>
     </context>
 </generatorConfiguration>
