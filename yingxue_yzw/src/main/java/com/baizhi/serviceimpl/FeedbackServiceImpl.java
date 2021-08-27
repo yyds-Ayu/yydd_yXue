@@ -1,5 +1,6 @@
 package com.baizhi.serviceimpl;
 
+import com.baizhi.annotation.AddLog;
 import com.baizhi.dao.FeedbackMapper;
 import com.baizhi.entity.Feedback;
 import com.baizhi.entity.FeedbackExample;
@@ -18,7 +19,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Resource
     FeedbackMapper feedbackMapper;
-
+    @AddLog("删除反馈")
     @Override
     public HashMap<String, Object> deleteFeedback(Feedback feedback) {
 

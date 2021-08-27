@@ -1,7 +1,7 @@
 package com.baizhi.serviceimpl;
 
+import com.baizhi.annotation.AddLog;
 import com.baizhi.dao.UserMapper;
-import com.baizhi.entity.Feedback;
 import com.baizhi.entity.FeedbackExample;
 import com.baizhi.entity.User;
 import com.baizhi.entity.UserExample;
@@ -47,7 +47,7 @@ public class UserServicerImpl implements UserService {
 
         return map;
     }
-
+    @AddLog(value = "修改用户状态")
     @Override
     public HashMap<String, Object> update(User user) {
         HashMap<String, Object> objectHashMap = new HashMap<>();
@@ -60,7 +60,7 @@ public class UserServicerImpl implements UserService {
         }
         return objectHashMap;
     }
-
+    @AddLog(value = "删除用户管理")
     @Override
     public HashMap<String, Object> deleteUser(User user) {
         HashMap<String,Object> hashMap = new HashMap<>();
@@ -92,7 +92,7 @@ public class UserServicerImpl implements UserService {
 
         return new CommonVO(page,total,feedbacks);
     }
-
+    @AddLog(value = "修改用户管理")
     @Override
     public CommonVOa updates(User user) {
         //HashMap<String,Object> hashMap = new HashMap<>();

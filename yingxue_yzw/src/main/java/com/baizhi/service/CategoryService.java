@@ -15,6 +15,8 @@ public interface CategoryService {
 
     CommonVOa delete(Category category);
 
+    String deletes(Category category);
+
     Category queryById(String id);
 
     CommonVOa update(Category category);

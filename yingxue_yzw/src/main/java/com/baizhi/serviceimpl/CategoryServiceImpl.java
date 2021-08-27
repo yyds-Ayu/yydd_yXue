@@ -1,5 +1,6 @@
 package com.baizhi.serviceimpl;
 
+import com.baizhi.annotation.AddLog;
 import com.baizhi.dao.CategoryMapper;
 import com.baizhi.dto.CategoryDTO;
 import com.baizhi.dto.PageDTO;
@@ -39,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
         commonVO.setRows(categories);*/
         return new CommonVO(pageDTO.getPage(),total,categories);
     }
-
+    @AddLog(value = "添加类别")
     @Override
     public CommonVOa add(Category category) {
 
@@ -57,7 +58,7 @@ public class CategoryServiceImpl implements CategoryService {
             return CommonVOa.fei();
         }
     }
-
+    //@AddLog(value = "删除一级类别")
     @Override
     public CommonVOa delete(Category category) {
 
@@ -75,17 +76,42 @@ public class CategoryServiceImpl implements CategoryService {
             }
         }else {
             categoryMapper.delete(category);
-            CommonVOa.success("二级类别删除成功！");
+            return CommonVOa.success("二级类别删除成功！");
 
         }
-        return null;
+    }
+    @AddLog(value = "删除一级类别")
+    @Override
+    public String deletes(Category category) {
+
+        String message=null;
+        if(category.getParentId()==null){
+            CategoryExample example = new CategoryExample();
+            example.createCriteria().andParentIdEqualTo(category.getId());
+
+            int count = categoryMapper.selectCountByExample(example);
+            if (count==0){
+                categoryMapper.delete(category);
+                message ="删除一级类别成功";
+                //return CommonVOa.success("删除一级类别成功！");
+            }else {
+                throw new RuntimeException("该类下有二级类别，删除失败！！！");
+                //return CommonVOa.gei("该类下有二级类别，删除失败！！！");
+
+            }
+        }else {
+            categoryMapper.delete(category);
+            message ="二级类别删除成功！";
+            //return CommonVOa.success("二级类别删除成功！");
+        }
+        return message;
     }
 
     @Override
     public Category queryById(String id) {
         return categoryMapper.selectByPrimaryKey(id);
     }
-
+    @AddLog(value = "修改一级类别")
     @Override
     public CommonVOa update(Category category) {
         try {

@@ -1,5 +1,6 @@
 package com.baizhi.serviceimpl;
 
+import com.baizhi.annotation.AddLog;
 import com.baizhi.dao.AdminDao;
 import com.baizhi.dto.PageDTO;
 import com.baizhi.entity.*;
@@ -71,7 +72,6 @@ public class AdminDaoServiceImpl implements AdminDaoService {
 
         return hashMap;
     }
-
     @Override
     public CommonVO queryAllPage(PageDTO pageDTO) {
         AdminExample adminExample = new AdminExample();
@@ -87,7 +87,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
         commonVO.setRows(categories);*/
         return new CommonVO(pageDTO.getPage(),total,categories);
     }
-
+    @AddLog(value = "管理员管理修改状态")
     @Override
     public CommonVOa updates(Admin admin) {
         //修改数据
@@ -104,7 +104,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
             return CommonVOa.fei();
         }
     }
-
+    @AddLog(value = "管理员管理删除数据")
     @Override
     public CommonVOa delete(Admin admin) {
         try {
@@ -120,7 +120,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
             return CommonVOa.fei();
         }
     }
-
+    @AddLog(value = "添加管理员")
     @Override
     public CommonVOa add(Admin admin) {
         try {
@@ -137,7 +137,7 @@ public class AdminDaoServiceImpl implements AdminDaoService {
     public Admin queryById(String id) {
         return adminDao.selectByPrimaryKey(id);
     }
-
+    @AddLog(value = "管理员管理是修改")
     @Override
     public CommonVOa update(Admin admin) {
 

@@ -29,10 +29,22 @@ public class CategoryController {
 
         return categoryService.add(category);
     }
-    @RequestMapping("/category/delete")
+    @RequestMapping("/category/deletes")
     public CommonVOa delete(@RequestBody Category category){
 
         return categoryService.delete(category);
+    }
+    @RequestMapping("/category/delete")
+    public CommonVOa deletes(@RequestBody Category category){
+
+        try {
+            String deletes = categoryService.deletes(category);
+            return CommonVOa.success(deletes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //System.out.println("e.getMessage()");
+            return CommonVOa.gei(e.getMessage());
+        }
     }
     @GetMapping("/category/queryById")
     public Category queryById(String id){
