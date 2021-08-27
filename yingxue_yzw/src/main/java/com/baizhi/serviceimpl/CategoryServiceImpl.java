@@ -1,6 +1,7 @@
 package com.baizhi.serviceimpl;
 
 import com.baizhi.dao.CategoryMapper;
+import com.baizhi.dto.CategoryDTO;
 import com.baizhi.dto.PageDTO;
 import com.baizhi.entity.Category;
 import com.baizhi.entity.CategoryExample;
@@ -44,12 +45,83 @@ public class CategoryServiceImpl implements CategoryService {
 
         try {
             category.setId(UUIDUtil.getUUID());
-            category.setLevels(1);
+            if (category.getParentId()!=null){
+                category.setLevels(2);
+            }else {
+                category.setLevels(1);
+            }
             categoryMapper.insertSelective(category);
             return CommonVOa.success("添加成功");
         } catch (Exception e) {
             e.printStackTrace();
             return CommonVOa.fei();
         }
+    }
+
+    @Override
+    public CommonVOa delete(Category category) {
+
+        if(category.getParentId()==null){
+            CategoryExample example = new CategoryExample();
+            example.createCriteria().andParentIdEqualTo(category.getId());
+
+            int count = categoryMapper.selectCountByExample(example);
+            if (count==0){
+                    categoryMapper.delete(category);
+                    return CommonVOa.success("删除一级类别成功！");
+            }else {
+                    return CommonVOa.gei("该类下有二级类别，删除失败！！！");
+
+            }
+        }else {
+            categoryMapper.delete(category);
+            CommonVOa.success("二级类别删除成功！");
+
+        }
+        return null;
+    }
+
+    @Override
+    public Category queryById(String id) {
+        return categoryMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public CommonVOa update(Category category) {
+        try {
+            categoryMapper.updateByPrimaryKeySelective(category);
+            return CommonVOa.success("数据修改成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonVOa.fei();
+        }
+    }
+
+    @Override
+    public CommonVO queryTwoPage(CategoryDTO categoryDTO) {
+
+        CategoryExample categoryExample = new CategoryExample();
+        categoryExample.createCriteria().andParentIdEqualTo(categoryDTO.getCategoryId());
+        //根据条件查询一级类别的数量
+        int total = categoryMapper.selectCountByExample(categoryExample);
+        //RowBounds rowBounds = new RowBounds((pageDTO.getPage()-1)*pageDTO.getPageSize(), pageDTO.getPageSize());
+        RowBounds rowBounds = new RowBounds((categoryDTO.getPage()-1)*categoryDTO.getPageSize(),categoryDTO.getPageSize());
+        //分页查询数据
+        List<Category> categories = categoryMapper.selectByExampleAndRowBounds(categoryExample,rowBounds);
+       /* CommonVO commonVO = new CommonVO();
+        commonVO.setPage(pageDTO.getPage());
+        commonVO.setTotal(total);
+        commonVO.setRows(categories);*/
+        return new CommonVO(categoryDTO.getPage(),total,categories);
+    }
+
+    @Override
+    public List<Category> queryByLevelsCategory(Integer levels) {
+
+        CategoryExample example = new CategoryExample();
+        example.createCriteria().andLevelsEqualTo(levels);
+
+        List<Category> list = categoryMapper.selectByExample(example);
+        return list;
     }
 }

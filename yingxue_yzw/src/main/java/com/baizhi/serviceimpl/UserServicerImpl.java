@@ -98,7 +98,7 @@ public class UserServicerImpl implements UserService {
         //HashMap<String,Object> hashMap = new HashMap<>();
         CommonVOa commonVOa = new CommonVOa();
 
-        //删除数据
+        //修改数据
         try {
             userMapper.updateByPrimaryKeySelective(user);
             /*commonVOa.setMessage("数据修改成功");

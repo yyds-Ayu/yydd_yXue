@@ -24,4 +24,10 @@ public class CommonVOa {
         oa.setStatus(400);
         return oa;
     }
+    public static CommonVOa gei(String message) {
+        CommonVOa oa = new CommonVOa();
+        oa.setMessage(message);
+        oa.setStatus(400);
+        return oa;
+    }
 }

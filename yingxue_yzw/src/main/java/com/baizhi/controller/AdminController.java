@@ -1,8 +1,11 @@
 package com.baizhi.controller;
 
+import com.baizhi.dto.PageDTO;
 import com.baizhi.entity.Admin;
 import com.baizhi.service.AdminDaoService;
 import com.baizhi.util.ImageCodeUtil;
+import com.baizhi.vo.CommonVO;
+import com.baizhi.vo.CommonVOa;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -55,4 +58,42 @@ public class AdminController {
        request.getServletContext().removeAttribute("admin");
 
    }
+   @RequestMapping("queryAllPage")
+   public CommonVO queryAllPage(@RequestBody PageDTO pageDTO){
+
+       return ad.queryAllPage(pageDTO);
+   }
+    @RequestMapping("update")
+    public CommonVOa update(@RequestBody Admin admin){
+
+        return ad.updates(admin);
+
+    }
+
+    @RequestMapping("delete")
+    public CommonVOa delete(@RequestBody Admin admin){
+        //HashMap<String, Object> hashMap = ad.deleteUser(user);
+
+        return ad.delete(admin);
+
+    }
+    @RequestMapping("add")
+    public CommonVOa add(@RequestBody Admin admin){
+        //HashMap<String, Object> hashMap = ad.deleteUser(user);
+
+        return ad.add(admin);
+
+    }
+    @RequestMapping("queryById")
+    public Admin queryById(String id){
+
+        return ad.queryById(id);
+
+    }
+    @RequestMapping("updates")
+    public CommonVOa updates(@RequestBody Admin admin){
+
+        return ad.update(admin);
+
+    }
 }

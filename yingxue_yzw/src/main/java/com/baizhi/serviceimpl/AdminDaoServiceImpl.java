@@ -1,8 +1,13 @@
 package com.baizhi.serviceimpl;
 
 import com.baizhi.dao.AdminDao;
-import com.baizhi.entity.Admin;
+import com.baizhi.dto.PageDTO;
+import com.baizhi.entity.*;
 import com.baizhi.service.AdminDaoService;
+import com.baizhi.util.UUIDUtil;
+import com.baizhi.vo.CommonVO;
+import com.baizhi.vo.CommonVOa;
+import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
+
 @Service
 @Transactional
 public class AdminDaoServiceImpl implements AdminDaoService {
@@ -63,5 +70,83 @@ public class AdminDaoServiceImpl implements AdminDaoService {
 
 
         return hashMap;
+    }
+
+    @Override
+    public CommonVO queryAllPage(PageDTO pageDTO) {
+        AdminExample adminExample = new AdminExample();
+        //根据条件查询一级类别的数量
+        int total = adminDao.selectCountByExample(adminExample);
+        //RowBounds rowBounds = new RowBounds((pageDTO.getPage()-1)*pageDTO.getPageSize(), pageDTO.getPageSize());
+        RowBounds rowBounds = new RowBounds((pageDTO.getPage()-1)*pageDTO.getPageSize(),pageDTO.getPageSize());
+        //分页查询数据
+        List<Admin> categories = adminDao.selectByExampleAndRowBounds(adminExample,rowBounds);
+       /* CommonVO commonVO = new CommonVO();
+        commonVO.setPage(pageDTO.getPage());
+        commonVO.setTotal(total);
+        commonVO.setRows(categories);*/
+        return new CommonVO(pageDTO.getPage(),total,categories);
+    }
+
+    @Override
+    public CommonVOa updates(Admin admin) {
+        //修改数据
+        try {
+            adminDao.updateByPrimaryKeySelective(admin);
+            /*commonVOa.setMessage("数据修改成功");
+            commonVOa.setStatus(200);*/
+            return CommonVOa.success("数据修改成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            //hashMap.put("message","删除数据异常！");
+          /*  commonVOa.setMessage("修改数据异常！");
+            commonVOa.setStatus(400);*/
+            return CommonVOa.fei();
+        }
+    }
+
+    @Override
+    public CommonVOa delete(Admin admin) {
+        try {
+            adminDao.delete(admin);
+            /*commonVOa.setMessage("数据修改成功");
+            commonVOa.setStatus(200);*/
+            return CommonVOa.success("数据删除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            //hashMap.put("message","删除数据异常！");
+          /*  commonVOa.setMessage("修改数据异常！");
+            commonVOa.setStatus(400);*/
+            return CommonVOa.fei();
+        }
+    }
+
+    @Override
+    public CommonVOa add(Admin admin) {
+        try {
+            admin.setId(UUIDUtil.getUUID());
+            adminDao.insertSelective(admin);
+            return CommonVOa.success("添加成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonVOa.fei();
+        }
+    }
+
+    @Override
+    public Admin queryById(String id) {
+        return adminDao.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public CommonVOa update(Admin admin) {
+
+        try {
+            adminDao.updateByPrimaryKeySelective(admin);
+            return CommonVOa.success("数据修改成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonVOa.fei();
+        }
     }
 }
