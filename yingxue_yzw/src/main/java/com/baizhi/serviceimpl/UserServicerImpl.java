@@ -1,18 +1,27 @@
 package com.baizhi.serviceimpl;
 
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
 import com.baizhi.annotation.AddLog;
 import com.baizhi.dao.UserMapper;
 import com.baizhi.entity.FeedbackExample;
 import com.baizhi.entity.User;
 import com.baizhi.entity.UserExample;
 import com.baizhi.service.UserService;
+import com.baizhi.util.AliyunOssUtil;
+import com.baizhi.util.UUIDUtil;
 import com.baizhi.vo.CommonVO;
 import com.baizhi.vo.CommonVOa;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import sun.plugin.util.UIUtil;
 
 import javax.annotation.Resource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,6 +61,10 @@ public class UserServicerImpl implements UserService {
     public HashMap<String, Object> update(User user) {
         HashMap<String, Object> objectHashMap = new HashMap<>();
         try {
+            User users = userMapper.selectOne(user);
+            String headImg = users.getHeadImg();
+            String replaces = headImg.replace("https://yingx-yyds.oss-cn-beijing.aliyuncs.com/","");
+            AliyunOssUtil.deleteBucket("yingx-yyds",replaces);
             userMapper.updateByPrimaryKeySelective(user);
             objectHashMap.put("message","修改成功！");
         } catch (Exception e) {
@@ -66,6 +79,10 @@ public class UserServicerImpl implements UserService {
         HashMap<String,Object> hashMap = new HashMap<>();
         //删除数据
         try {
+            User users = userMapper.selectOne(user);
+            String headImg = users.getHeadImg();
+            String replaces = headImg.replace("https://yingx-yyds.oss-cn-beijing.aliyuncs.com/","");
+            AliyunOssUtil.deleteBucket("yingx-yyds",replaces);
             userMapper.delete(user);
             hashMap.put("message","数据删除成功");
         } catch (Exception e) {
@@ -96,8 +113,6 @@ public class UserServicerImpl implements UserService {
     @Override
     public CommonVOa updates(User user) {
         //HashMap<String,Object> hashMap = new HashMap<>();
-        CommonVOa commonVOa = new CommonVOa();
-
         //修改数据
         try {
             userMapper.updateByPrimaryKeySelective(user);
@@ -111,5 +126,49 @@ public class UserServicerImpl implements UserService {
             commonVOa.setStatus(400);*/
             return CommonVOa.fei();
         }
+    }
+    @AddLog(value = "添加用户信息")
+    @Override
+    public CommonVOa add(User user) {
+        try {
+            user.setId(UUIDUtil.getUUID());
+         /*   user.setStatus("1");
+            user.setCreateTime(new Date());*/
+            userMapper.insertSelective(user);
+            return CommonVOa.success("添加成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonVOa.fei();
+        }
+    }
+
+    @Override
+    public String uploadHeadImg(MultipartFile headImg) {
+        //获取文件名
+        String filename = headImg.getOriginalFilename();
+        //***-logo.jpg
+        String newName = new Date().getTime() + "-" + filename;
+
+        String bucketName = "yingx-yyds";//指定空间
+        String FileName = "userImg/"+newName;//配置文件名
+
+        AliyunOssUtil.uploadfileBytes(bucketName,FileName,headImg);
+
+        String netPath="https://yingx-yyds.oss-cn-beijing.aliyuncs.com/"+FileName;
+
+       /* String message = null;
+
+        try {
+            message = netPath;
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = netPath;
+        }*/
+        return netPath;
+    }
+
+    @Override
+    public User queryById(String id) {
+        return userMapper.selectByPrimaryKey(id);
     }
 }

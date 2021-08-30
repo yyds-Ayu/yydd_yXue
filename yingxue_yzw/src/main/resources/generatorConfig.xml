@@ -41,7 +41,8 @@
         </javaClientGenerator>
         <!--生成对应表及类名-->
        <!--<table tableName="yx_admin" domainObjectName="Admin" ></table>-->
-       <table tableName="yx_log" domainObjectName="Log" ></table>
+      <!-- <table tableName="yx_log" domainObjectName="Log" ></table>-->
+       <table tableName="yx_video" domainObjectName="Video" ></table>
         <!--<table tableName="banner" domainObjectName="Banner" ></table>&ndash;&gt;-->
         <!--<table tableName="yx_user" domainObjectName="User"></table>-->
        <!-- <table tableName="yx_feedback" domainObjectName="Feedback"/>-->

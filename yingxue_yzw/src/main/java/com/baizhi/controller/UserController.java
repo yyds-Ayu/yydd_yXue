@@ -2,6 +2,7 @@ package com.baizhi.controller;
 
 
 import com.baizhi.dto.PageDTO;
+import com.baizhi.entity.Category;
 import com.baizhi.entity.User;
 import com.baizhi.service.FeedbackService;
 import com.baizhi.service.UserService;
@@ -9,6 +10,7 @@ import com.baizhi.vo.CommonVO;
 import com.baizhi.vo.CommonVOa;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -64,6 +66,27 @@ public class UserController {
         return hashMap;
 
     }
+    @RequestMapping("add")
+    public CommonVOa add(@RequestBody User user){
+        //HashMap<String, Object> hashMap = userService.deleteUser(user);
 
+        return userService.add(user);
+
+    }
+    @RequestMapping("uploadHeadImg")
+    public HashMap<String, String> uploadHeadImg(MultipartFile headImg){
+        //HashMap<String, Object> hashMap = userService.deleteUser(user);
+        String msg = userService.uploadHeadImg(headImg);
+        HashMap<String, String> HashMap = new HashMap<>();
+
+        HashMap.put("fileName",msg);
+        return HashMap;
+
+    }
+    @GetMapping("queryById")
+    public User queryById(String id){
+
+        return userService.queryById(id);
+    }
 
 }
